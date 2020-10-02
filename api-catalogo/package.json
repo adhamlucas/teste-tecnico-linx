@@ -1,0 +1,19 @@
+{
+  "name": "api-catalogo",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "commonjs",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "read-save": "node ./script/script.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cli-spinners": "^2.4.0",
+    "log-update": "^4.0.0",
+    "mongoose": "^5.10.7"
+  }
+}
