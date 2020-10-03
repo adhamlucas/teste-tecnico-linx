@@ -1,4 +1,4 @@
-const Product = require('../models/Product');
+const Product = require('../src/models/Product');
 const fs = require('fs');
 const readline = require('readline');
 
@@ -57,9 +57,9 @@ function readFileAndSave  () {
   })
 }
 
-// readFileAndSave();
-Product.find({status: 'AVAILABLE'}, (err, document) => {
-  if (err) console.erro(err);
-  console.log(document.length);
-  process.exit(0);
-});
+readFileAndSave();
+// Product.find({status: 'AVAILABLE'}, (err, document) => {
+//   if (err) console.erro(err);
+//   console.log(document.length);
+//   process.exit(0);
+// });
