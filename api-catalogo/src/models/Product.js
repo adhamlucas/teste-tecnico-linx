@@ -79,6 +79,6 @@ const ProductSchema = new Schema({
   ungroupedId: String
 }, {minimize: false, _id: false})
 
-const Product = mongoose.model('Product1643', ProductSchema);
+const Product = mongoose.model('Product', ProductSchema);
 
 module.exports = Product;

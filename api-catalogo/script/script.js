@@ -58,8 +58,3 @@ function readFileAndSave  () {
 }
 
 readFileAndSave();
-// Product.find({status: 'AVAILABLE'}, (err, document) => {
-//   if (err) console.erro(err);
-//   console.log(document.length);
-//   process.exit(0);
-// });
