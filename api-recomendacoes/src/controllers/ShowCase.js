@@ -6,17 +6,15 @@ const getNewIndex = (countObject, maxProduct) => {
   countObject.count += 1;
   return maxProduct + countObject.count;
 }
-const getPopularItemId = (products, newIndex) => {
+const getNewItemId = (products, newIndex) => {
   return products[newIndex].recommendedProduct.id;
 }
 
 const filterNullAndUnvailables = (recommendedProductsItems) => {
   return (
-    recommendedProductsItems.filter((item, index) => {
+    recommendedProductsItems.filter((item) => {
       if (item !== null) {
         if (item.status === 'AVAILABLE') {
-          console.log(item._id, index)
-          console.log(typeof item)
           return item;
         }
       }
@@ -24,34 +22,42 @@ const filterNullAndUnvailables = (recommendedProductsItems) => {
   );
 }
 
+const ifNullRequest = async (product, recomendedProductsIds, newIndex, countUnvailable, maxProduct) => {
+  while(product === null && newIndex < recomendedProductsIds.length) {
+    product = await Catalog.getProduct(getNewItemId(recomendedProductsIds, newIndex)).catch(handlingError);
+    newIndex = getNewIndex(countUnvailable, maxProduct);
+  }
+  return product;
+}
+
+const ifUnvailableOrNullRequest = async (product, recomendedProductsIds, newIndex, countUnvailable, maxProduct) => {
+  if(product === null) return product;
+  while(product.status !== "AVAILABLE" && newIndex < recomendedProductsIds.length) {
+    product = await Catalog.getProduct(getNewItemId(recomendedProductsIds, newIndex)).catch(handlingError);
+    newIndex = getNewIndex(countUnvailable, maxProduct);
+    if(product === null) {
+      product = ifNullRequest(product, recomendedProductsIds, newIndex, countUnvailable, maxProduct);
+    }
+  }
+  return product;
+}
+
 const tratarNulosEUnvailable =  async (recomendedProductsIds, recommendedProductsItems, maxProduct) => {      
   let countUnvailable = {count: 0};
   let newIndex = getNewIndex(countUnvailable, maxProduct);
+  let newProducts = []
 
   for (let product of recommendedProductsItems) {
     if (product === null) {
-      while(product === null && newIndex < recomendedProductsIds.length) {
-        product = await Catalog.getProduct(getPopularItemId(recomendedProductsIds, newIndex)).catch(handlingError);
-        console.log('hello', product !== null ?  product._id : newIndex)
-        newIndex = getNewIndex(countUnvailable, maxProduct);
-      }
-      while(product.status !== "AVAILABLE" && newIndex < recomendedProductsIds.length) {
-        product = await Catalog.getProduct(getPopularItemId(recomendedProductsIds, newIndex)).catch(handlingError);
-        console.log('while status 1',product._id)
-        newIndex = getNewIndex(countUnvailable, maxProduct);
-      }
-      console.log(recommendedProductsItems.push(product))
+      product = await ifNullRequest(product, recomendedProductsIds, newIndex, countUnvailable, maxProduct);
+      product = await ifUnvailableOrNullRequest(product, recomendedProductsIds, newIndex, countUnvailable, maxProduct);
+      newProducts.push(product);
     } else if(product.status !== 'AVAILABLE') {
-      console.log('if status', product._id);
-      while(product.status !== "AVAILABLE" && newIndex < recomendedProductsIds.length) {
-        product = await Catalog.getProduct(getPopularItemId(recomendedProductsIds, newIndex)).catch(handlingError);
-        console.log('novo product if status', product.status, product._id)
-        newIndex = getNewIndex(countUnvailable, maxProduct);
-      }
-      console.log(recommendedProductsItems.push(product));  
+      product = await ifUnvailableOrNullRequest(product, recomendedProductsIds, newIndex, countUnvailable, maxProduct);
+      newProducts.push(product);  
      }
   }
-
+  recommendedProductsItems = recommendedProductsItems.concat(newProducts);
   return filterNullAndUnvailables(recommendedProductsItems);
 }
 
@@ -64,8 +70,7 @@ async function getShowCases(maxProduct=10) {
   }
 
   if (maxProduct < 10) {
-    mostPopularSliced = mostPopular.slice(0, 10);
-    priceReductionSliced = priceReduction.slice(0, 10);
+    maxProduct = 10;
   }
 
   mostPopularSliced = mostPopular.slice(0, maxProduct);
@@ -80,18 +85,24 @@ async function getShowCases(maxProduct=10) {
       return Catalog.getProduct(recommendedProduct.id).catch(handlingError);
     })).catch(error => console.error(new Error(error)));
 
-    // let countMostPopularInexistent = {count : 0};
-    // let newIndex = getNewIndex(countMostPopularInexistent);
+    console.time('tratamento')
     console.log('firt ----------------')
-    mostPopularItems = await tratarNulosEUnvailable(mostPopular, mostPopularItems, maxProduct);
-    // mostPopularItems.map((item, index) => console.log( typeof item, index))
+    console.time('popular');
+    console.timeLog("popular", "Começando tratamento e request dos populares");
+    mostPopularItems = await tratarNulosEUnvailable(mostPopular, mostPopularItems, maxProduct).catch((error) => new Error(error));
+    console.timeEnd('popular');
 
     console.log('second ----------------')
-
+    console.time('priceReduction');
+    console.timeLog('priceReduction', 'começando tratamento e request dos pricereduction');
     priceReductionItems = await tratarNulosEUnvailable(priceReduction, priceReductionItems, maxProduct);
-    // priceReductionItems.map((item, index) => console.log( typeof item, index))
-
+    console.timeEnd('priceReduction');
+    console.timeEnd('tratamento')
     
+    return ({
+      mostPopular: mostPopularItems,
+      priceReduction: priceReductionItems
+    })
 
   } catch(error) {
     throw error; 
