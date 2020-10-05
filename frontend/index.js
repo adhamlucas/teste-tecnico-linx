@@ -2,6 +2,7 @@
 const url = 'http://localhost:3001/showcases';
 
 const MAX_PRODUCT = '16';
+const CAROUSEL_LENGTH = 1200;
 
 const transictionToRight = (event, row) => {
   event.preventDefault();
@@ -11,8 +12,8 @@ const transictionToRight = (event, row) => {
     return;
   }
   leftMargin = parseInt(leftMargin[0], 10);
-  const newMarginLeft = (leftMargin + 1200) < (MAX_PRODUCT * 300)
-    ? (leftMargin + 1200) : -leftMargin;
+  const newMarginLeft = (leftMargin + CAROUSEL_LENGTH) < (MAX_PRODUCT * 300)
+    ? (leftMargin + CAROUSEL_LENGTH) : -leftMargin;
   row.style.marginLeft = `-${newMarginLeft}px`;
 };
 
@@ -23,7 +24,7 @@ const transictionToLeft = (event, row) => {
     return;
   }
   leftMargin = parseInt(leftMargin[0], 10);
-  const newMarginLeft = (-leftMargin + 1200) < 0 ? (-leftMargin + 1200) : 0;
+  const newMarginLeft = (-leftMargin + CAROUSEL_LENGTH) < 0 ? (-leftMargin + CAROUSEL_LENGTH) : 0;
   row.style.marginLeft = `${newMarginLeft}px`;
 };
 
@@ -38,10 +39,6 @@ const priceReductionLeftButton = document.getElementById('price-reduction-left-b
 const priceReductionRow = document.getElementById('price-reduction-carousel-row');
 priceReductionRightButton.addEventListener('click', (event) => transictionToRight(event, priceReductionRow));
 priceReductionLeftButton.addEventListener('click', (event) => transictionToLeft(event, priceReductionRow));
-
-
-// popularLeftButton.addEventListener('click', )
-
 
 const getShowCases = async (maxProduct) => {
   const response = await fetch(`${url}?max_product=${maxProduct}`);
@@ -76,6 +73,14 @@ const createPopularBadge = (index) => {
   return popularBox;
 };
 
+const getDiscountPercent = (price, oldPrice) => (
+  parseInt(((1 - (parseFloat(price) / parseFloat(oldPrice))) * 100), 10)
+);
+
+const formatNumbers = (value) => (
+  parseFloat(value).toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+);
+
 const createProductCard = ({
   name, images, oldPrice, price,
 }, showCase, index) => {
@@ -85,7 +90,7 @@ const createProductCard = ({
   if (showCase === 'price') {
     const priceReductionBox = document.createElement('div');
     priceReductionBox.className = 'price-reduction-box';
-    const priceReductionPercent = parseInt(((1 - (parseFloat(price) / parseFloat(oldPrice))) * 100), 10);
+    const priceReductionPercent = getDiscountPercent(price, oldPrice);
     priceReductionBox.innerHTML = `-${priceReductionPercent}%`;
     product.appendChild(priceReductionBox);
   } else if (showCase === 'popular') {
@@ -104,7 +109,7 @@ const createProductCard = ({
 
   const oldPriceElement = document.createElement('p');
   oldPriceElement.className = 'old-price';
-  const oldPriceFormated = parseFloat(oldPrice).toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  const oldPriceFormated = formatNumbers(oldPrice);
   oldPriceElement.innerHTML = `<s>R$ ${oldPriceFormated}<s>`;
 
   const actualPriceContainer = document.createElement('div');
@@ -114,7 +119,7 @@ const createProductCard = ({
   actualPricePreposition.innerHTML = 'Por ';
   const actualPriceValue = document.createElement('p');
   actualPriceValue.className = 'actual-price-value';
-  const actualPriceFormated = parseFloat(price).toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  const actualPriceFormated = formatNumbers(price);
   actualPriceValue.innerHTML = `R$ ${actualPriceFormated}`;
   actualPriceContainer.appendChild(actualPricePreposition);
   actualPriceContainer.appendChild(actualPriceValue);
@@ -126,7 +131,7 @@ const createProductCard = ({
   parceledPricePrepostion.innerHTML = '10x ';
   const parceledPriceValue = document.createElement('p');
   parceledPriceValue.className = 'parceled-price-value';
-  const parceledPriceValueFormated = (price / 10).toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  const parceledPriceValueFormated = formatNumbers(price / 10);
   parceledPriceValue.innerHTML = `R$ ${parceledPriceValueFormated}`;
   parceledPriceContainer.appendChild(parceledPricePrepostion);
   parceledPriceContainer.appendChild(parceledPriceValue);

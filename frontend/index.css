@@ -26,6 +26,7 @@ body {
 .showcase-title {
   font-weight: 500;
   color: #6e4b87;
+  margin-bottom: 0px;
 }
 
 .left-arrow-button {
@@ -141,7 +142,7 @@ body {
 .most-popular-square {
   height: 20px;
   width: 24px;
-  background-color: #d4cfd6;
+  background-color: #f4f5f5;
 }
 
 .most-popular-triangule {
@@ -149,12 +150,12 @@ body {
 	height: 0;
 	border-left: 12px solid transparent;
 	border-right: 12px solid transparent;
-	border-top: 10px solid #d4cfd6;
+	border-top: 10px solid #f4f5f5;
 }
 
 .most-popular-index {
   position: relative;
-  left: 8px;
+  left: 6.5px;
   top: -27px;
   margin: 0;
   color: #6e4b87;
