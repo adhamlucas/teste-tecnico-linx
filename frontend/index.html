@@ -7,42 +7,37 @@
   </head>
 
   <body>
-    <section class="vitrine-populares">
+    <section class="showcase">
       <p class="showcase-title">Mais vendidos</p>
-      <div class="left-arrow-button">
-        <svg class="left-arrow-icon" viewBox="0 0 100 100">
-          <path d="M 10,50 L 60,100 L 70,90 L 30,50  L 70,10 L 60,0 Z" class="arrow"></path>
-        </svg> 
-      </div>
-      <div class="right-arrow-button"> 
-        <svg class="right-arrow-icon" viewBox="0 0 100 100">
-          <path d="M 10,50 L 60,100 L 70,90 L 30,50  L 70,10 L 60,0 Z" class="arrow" transform="translate(100, 100) rotate(180)"></path>
-        </svg>  
-      </div>
-      <div class="carousel">
-        <div class="product">
-          <div class="imageContainer">
-            <img src="//d1h4n7nr93grs2.cloudfront.net/Custom/Content/Products/11/08/1108007_p-12215_m1_636935132811066384"/>
-          </div>
-          <p class="description">Arara Ajust&#225;vel CV151406 Cazza 1549863</p>
-          <p class="oldPrice"><s>R$ 599.9</s></p>
-          <div class="actual-price-container">
-            <p class="actual-price-preposition">Por </p> 
-            <p class="actual-price-value">R$ 399,9</p>
-          </div>
-          <div class="parceled-price-container">
-            <p class="parceled-price-preposition">10x </p> 
-            <p class="parceled-price-value">R$ 39,99</p>
-          </div>
+      <div id="popular-carousel" class="carousel">
+        <div id="popular-left-button" class="left-arrow-button">
+          <svg class="left-arrow-icon" viewBox="0 0 100 100">
+            <path d="M 10,50 L 60,100 L 70,90 L 30,50  L 70,10 L 60,0 Z" class="arrow"></path>
+          </svg> 
         </div>
-        <div class="product">
-          <div class="imageContainer">
-            <img src="//d1h4n7nr93grs2.cloudfront.net/Custom/Content/Products/11/08/1108007_p-12215_m1_636935132811066384"/>
-          </div>
-          <p class="description">Arara Ajust&#225;vel CV151406 Cazza 1549863</p>
-          <p class="oldPrice"><s>599.9</s></p>
-          <p class="actualPrice">Por R$ 399,9</p>
-          <p class="parceledPrice">10x R$ 39,99</p>
+        <div id="popular-right-button" class="right-arrow-button"> 
+          <svg class="right-arrow-icon" viewBox="0 0 100 100">
+            <path d="M 10,50 L 60,100 L 70,90 L 30,50  L 70,10 L 60,0 Z" class="arrow" transform="translate(100, 100) rotate(180)"></path>
+          </svg>  
+        </div>
+        <div id="popular-carousel-row" class="carousel-row">
+        </div>
+      </div>
+    </section>
+    <section class="showcase">
+      <p class="showcase-title">Produtos que baixaram de preço</p>
+      <div id="price-reduction-carousel" class="carousel">
+        <div id='price-reduction-left-button' class="left-arrow-button">
+          <svg class="left-arrow-icon" viewBox="0 0 100 100">
+            <path d="M 10,50 L 60,100 L 70,90 L 30,50  L 70,10 L 60,0 Z" class="arrow"></path>
+          </svg> 
+        </div>
+        <div id='price-reduction-right-button' class="right-arrow-button"> 
+          <svg class="right-arrow-icon" viewBox="0 0 100 100">
+            <path d="M 10,50 L 60,100 L 70,90 L 30,50  L 70,10 L 60,0 Z" class="arrow" transform="translate(100, 100) rotate(180)"></path>
+          </svg>  
+        </div>
+        <div id="price-reduction-carousel-row" class="carousel-row">
         </div>
       </div>
     </section>

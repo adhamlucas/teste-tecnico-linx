@@ -9,9 +9,13 @@ body {
   padding: 0;
   border: 0;
   vertical-align: baseline;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
-.vitrine-populares {
+.showcase {
   width: 1200px;
   display: flex;
   flex-direction: column;
@@ -26,11 +30,12 @@ body {
 
 .left-arrow-button {
   left: 0;
- 
+  top: 35%;
 }
 
 .right-arrow-button {
   right: 0;
+  top: 35%;
 }
 
 .left-arrow-button, .right-arrow-button {
@@ -41,10 +46,12 @@ body {
   height: 44px;
   border-radius: 50%;
   background-color: rgba(255, 255, 255, 0.75);
+  transition: 0.4 all ease;
 }
 
 .left-arrow-button:hover, .right-arrow-button:hover {
   cursor: pointer;
+  background-color: white;
 }
 
 
@@ -57,10 +64,7 @@ body {
   box-sizing: border-box;
   fill: currentColor;
   position: absolute;
-  left: 20%;
-  top: 20%;
-  width: 60%;
-  height: 60%;
+  
   color: orange;
 }
 
@@ -69,21 +73,30 @@ body {
   flex-direction: row;
   width: 100%;
   overflow-x: hidden;
+  position: relative;
+}
+
+.carousel-row {
+  display: flex;
+  margin-left: 0px;
+  margin-right: 0px;
+  transition: margin-left 0.5s ease-in-out;
 }
 
 .product {
-  width: 250px;
+  width: 280px;
   padding: 10px;
 }
 
-.imageContainer {
+.image-container {
   display: flex;
   justify-content: center;
-  max-width: 100%;
+  width: 280px;
 }
 
-.imageContainer img {
-  width: 200px
+.image-container img {
+  min-width: 100%;
+  max-width: 100%;
 }
 
 .description {
@@ -91,9 +104,10 @@ body {
   color: #3f3f3f;
 }
 
-.oldPrice {
+.old-price {
   font-size: 13px;
   color: #939393;
+  margin-bottom: 4px;
 }
 
 .actual-price-preposition, .actual-price-value {
@@ -111,10 +125,22 @@ body {
 
 .parceled-price-preposition {
   font-size: 14px;
-
 }
 
 .parceled-price-preposition, .parceled-price-value {
+  font-size: 14px;
   color: #939393;
   display: inline;
+}
+
+.price-reduction-box {
+  width: 40px;
+  height: 24px;
+  font-size: 15px;
+  color: white;
+  background-color: #6e3d7f;
+  border-radius: 4px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
