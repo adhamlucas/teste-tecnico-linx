@@ -66,7 +66,7 @@ async function getShowCases(req, res) {
   let maxProduct = req.query.max_product;
  
   if (isNaN(maxProduct)) {
-    res.status(400).send({error: 'max_product parameter is not a number!'});
+    res.status(400).send({error: '"max_product" parameter is not a number!'});
     return;
   }
 
@@ -74,15 +74,20 @@ async function getShowCases(req, res) {
   if (maxProduct < 10) {
     maxProduct = 10;
   }
-
-  let mostPopular = await Linx.getMostPopular();
-  let priceReduction = await Linx.getPriceReduction();
   
-
-  mostPopularSliced = mostPopular.slice(0, maxProduct);
-  priceReductionSliced = priceReduction.slice(0, maxProduct);
-
   try {
+    let getMostPopularPromise = Linx.getMostPopular().catch((error) => {
+      throw new Error(error);
+    });
+    let getPriceReductionPromise = Linx.getPriceReduction().catch((error) => {
+      throw new Error(error);
+    });
+
+    let [mostPopular, priceReduction] = await Promise.all([getMostPopularPromise, getPriceReductionPromise]);
+
+    mostPopularSliced = mostPopular.slice(0, maxProduct);
+    priceReductionSliced = priceReduction.slice(0, maxProduct);
+
     let mostPopularItems = await Promise.all(mostPopularSliced.map(({recommendedProduct}) => {
       return Catalog.getProduct(recommendedProduct.id).catch(handlingError);
     })).catch(error => console.error(new Error(error)));
@@ -90,7 +95,7 @@ async function getShowCases(req, res) {
     let priceReductionItems = await Promise.all(priceReductionSliced.map(({recommendedProduct}) => {
       return Catalog.getProduct(recommendedProduct.id).catch(handlingError);
     })).catch(error => console.error(new Error(error)));
-
+    
     mostPopularItems = await tratarNulosEUnvailable(mostPopular, mostPopularItems, maxProduct).catch((error) =>{ 
       throw new Error(error);
     });
