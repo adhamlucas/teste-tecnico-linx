@@ -1,6 +1,6 @@
 const url = 'http://localhost:3001/showcases';
 
-const MAX_PRODUCT = '12';
+const MAX_PRODUCT = '16';
 
 const transictionToRight = (event, row) => {
   event.preventDefault();
@@ -60,6 +60,22 @@ const limitDescriptionProduct = (name) => {
   return name;
 }
 
+const createPopularBadge = (index) => {
+  let popularBox = document.createElement('div');
+  popularBox.className = 'most-popular-box';
+  let square = document.createElement('div');
+  square.className = 'most-popular-square';
+  let triangule = document.createElement('div');
+  triangule.className = 'most-popular-triangule';
+  let number = document.createElement('p');
+  number.className = 'most-popular-index';
+  number.innerHTML = `${index + 1}°`
+  popularBox.appendChild(square);
+  popularBox.appendChild(triangule);
+  popularBox.appendChild(number);
+  return popularBox
+}
+
 const createProductCard = ({name, images, oldPrice, price}, showCase, index) => {
   let product = document.createElement('div');
   product.className = 'product';
@@ -72,9 +88,7 @@ const createProductCard = ({name, images, oldPrice, price}, showCase, index) => 
     priceReductionBox.innerHTML = `-${priceReductionPercent}%`;
     product.appendChild(priceReductionBox);
   } else if(showCase === 'popular') {
-    let popularBox = document.createElement('div');
-    popularBox.className = 'most-popular-box';
-    popularBox.innerHTML = `${index + 1}°`
+    product.appendChild(createPopularBadge(index));
   }
 
   let imageContainer = document.createElement('div');
@@ -99,7 +113,6 @@ const createProductCard = ({name, images, oldPrice, price}, showCase, index) => 
   actualPricePreposition.innerHTML = 'Por ';
   let actualPriceValue = document.createElement('p');
   actualPriceValue.className = 'actual-price-value';
-  actualPriceValueFormated = parseFloat(price).toFixed(2);
   actualPriceFormated = parseFloat(price).toLocaleString('de-DE', {minimumFractionDigits: 2, maximumFractionDigits: 2});
   actualPriceValue.innerHTML = `R$ ${actualPriceFormated}`;
   actualPriceContainer.appendChild(actualPricePreposition);
@@ -122,7 +135,6 @@ const createProductCard = ({name, images, oldPrice, price}, showCase, index) => 
   product.appendChild(oldPriceElement);
   product.appendChild(actualPriceContainer);
   product.appendChild(parceledPriceContainer);
-  product
 
   return product;
 }
@@ -134,11 +146,11 @@ const main = async () => {
   const priceReductionCarouselRow = document.getElementById('price-reduction-carousel-row');
 
   mostPopular.map((item, index) => {
-    popularCarouselRow.appendChild(createProductCard(item));
+    popularCarouselRow.appendChild(createProductCard(item, 'popular', index));
   })
 
   priceReduction.map((item, index) => {
-    priceReductionCarouselRow.appendChild(createProductCard(item, 'price', index));
+    priceReductionCarouselRow.appendChild(createProductCard(item, 'price'));
   })
 }
 

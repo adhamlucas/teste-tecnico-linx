@@ -63,8 +63,7 @@ body {
   pointer-events: none;
   box-sizing: border-box;
   fill: currentColor;
-  position: absolute;
-  
+  width: 42px;
   color: orange;
 }
 
@@ -133,6 +132,36 @@ body {
   display: inline;
 }
 
+.most-popular-box {
+  position: relative;
+  right: -265px;
+  top: 40px;
+}
+
+.most-popular-square {
+  height: 20px;
+  width: 24px;
+  background-color: #d4cfd6;
+}
+
+.most-popular-triangule {
+  width: 0px;
+	height: 0;
+	border-left: 12px solid transparent;
+	border-right: 12px solid transparent;
+	border-top: 10px solid #d4cfd6;
+}
+
+.most-popular-index {
+  position: relative;
+  left: 8px;
+  top: -27px;
+  margin: 0;
+  color: #6e4b87;
+  font-size: 14px;
+  font-weight: bold;
+}
+
 .price-reduction-box {
   width: 40px;
   height: 24px;
@@ -143,4 +172,8 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
+  position: relative;
+  left: -10px;
+  top: 10px;
 }
+
