@@ -6,6 +6,7 @@ const getNewIndex = (countObject, maxProduct) => {
   countObject.count += 1;
   return maxProduct + countObject.count;
 }
+
 const getNewItemId = (products, newIndex) => {
   return products[newIndex].recommendedProduct.id;
 }
@@ -61,17 +62,22 @@ const tratarNulosEUnvailable =  async (recomendedProductsIds, recommendedProduct
   return filterNullAndUnvailables(recommendedProductsItems);
 }
 
-async function getShowCases(maxProduct=10) {
-  let mostPopular = await Linx.getMostPopular();
-  let priceReduction = await Linx.getPriceReduction();
-
+async function getShowCases(req, res) {
+  let maxProduct = req.query.max_product;
+ 
   if (isNaN(maxProduct)) {
-    throw 'maxProduct parameter is not a number!'
+    res.status(400).send({error: 'max_product parameter is not a number!'});
+    return;
   }
 
+  maxProduct = parseInt(maxProduct, 10);
   if (maxProduct < 10) {
     maxProduct = 10;
   }
+
+  let mostPopular = await Linx.getMostPopular();
+  let priceReduction = await Linx.getPriceReduction();
+  
 
   mostPopularSliced = mostPopular.slice(0, maxProduct);
   priceReductionSliced = priceReduction.slice(0, maxProduct);
@@ -85,41 +91,24 @@ async function getShowCases(maxProduct=10) {
       return Catalog.getProduct(recommendedProduct.id).catch(handlingError);
     })).catch(error => console.error(new Error(error)));
 
-    console.time('tratamento')
-    console.log('firt ----------------')
-    console.time('popular');
-    console.timeLog("popular", "Começando tratamento e request dos populares");
-    mostPopularItems = await tratarNulosEUnvailable(mostPopular, mostPopularItems, maxProduct).catch((error) => new Error(error));
-    console.timeEnd('popular');
-
-    console.log('second ----------------')
-    console.time('priceReduction');
-    console.timeLog('priceReduction', 'começando tratamento e request dos pricereduction');
-    priceReductionItems = await tratarNulosEUnvailable(priceReduction, priceReductionItems, maxProduct);
-    console.timeEnd('priceReduction');
-    console.timeEnd('tratamento')
+    mostPopularItems = await tratarNulosEUnvailable(mostPopular, mostPopularItems, maxProduct).catch((error) =>{ 
+      throw new Error(error);
+    });
+    priceReductionItems = await tratarNulosEUnvailable(priceReduction, priceReductionItems, maxProduct).catch((error) =>{ 
+      throw new Error(error);
+    });
     
-    return ({
+    res.json({
       mostPopular: mostPopularItems,
       priceReduction: priceReductionItems
     })
 
   } catch(error) {
-    throw error; 
+    res.status(500).send(error.message);
+    console.error(error);
   }
 }
 
 module.exports = {
   getShowCases
 }
-
-
-/*
-  Frontend - GET: url: http://localhost:3000/vitrines?maxProduct=10
-  API recomenadção:
-    - get priceReduction
-      get mostPopular
-      slice priceReduction[0:10] 
-      slice mostPopular[0:10]
-      mostPopular.map(item => getProduct(item.id));
-*/

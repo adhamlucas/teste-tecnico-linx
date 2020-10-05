@@ -5,7 +5,7 @@ module.exports = {
     } else if (error.request) {
       console.error(new Error(`No one response from ${error.request._currentUrl}`));
     } else {
-      console.error(new Error(`Error: ${error.message}`));
+      console.error(new Error(`${error.message}`));
     }
   }
 }

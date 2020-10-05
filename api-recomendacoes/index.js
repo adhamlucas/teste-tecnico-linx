@@ -1,12 +1,22 @@
-const Catalog = require('./src/services/Catalog');
-const ShowCase = require('./src/controllers/ShowCase');
+const express = require('express');
+const app = express();
+const port = 3001;
+const routes = require('./src/routes/Routes');
 
-const teste = async () => {
-  const data = await Catalog.getCompactProduct(12)
-  console.log(data[0].categories);
-}
-teste();
+app.use(express.json());
+app.use(routes);
 
-ShowCase.getShowCases().catch((reason) => {
-  console.log(reason)
-})
+// const main = async() => {
+//   console.time('timerIndex');
+//   let algo = await ShowCase.getShowCases(70).catch((reason) => {
+//     console.log('ola',reason)
+//     console.log("DENTRO DO INDEX.JS")
+//   })
+//   console.timeEnd('timerIndex');
+//   return algo;
+// }
+// main().then((value) => console.log(value.mostPopular.length));
+
+app.listen(port, () => {
+  console.log(`The server is runing on: http://localhost:${port}`)
+});
