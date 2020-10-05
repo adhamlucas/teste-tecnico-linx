@@ -2,71 +2,22 @@ const Catalog = require('../services/Catalog');
 const Linx = require('../services/Linx');
 const { handlingError } = require('../utils/HandlingError');
 
-const getNewIndex = (countObject, maxProduct) => {
-  countObject.count += 1;
-  return maxProduct + countObject.count;
-}
-
-const getNewItemId = (products, newIndex) => {
-  return products[newIndex].recommendedProduct.id;
-}
-
-const filterNullAndUnvailables = (recommendedProductsItems) => {
-  return (
-    recommendedProductsItems.filter((item) => {
-      if (item !== null) {
-        if (item.status === 'AVAILABLE') {
-          return item;
-        }
+const filterNullAndUnvailables = (recommendedProductsItems) => (
+  recommendedProductsItems.filter((item) => {
+    if (item !== null && typeof item !== 'undefined') {
+      if (item.status.toLocaleLowerCase() === 'available') {
+        return item;
       }
-    })
-  );
-}
-
-const ifNullRequest = async (product, recomendedProductsIds, newIndex, countUnvailable, maxProduct) => {
-  while(product === null && newIndex < recomendedProductsIds.length) {
-    product = await Catalog.getProduct(getNewItemId(recomendedProductsIds, newIndex)).catch(handlingError);
-    newIndex = getNewIndex(countUnvailable, maxProduct);
-  }
-  return product;
-}
-
-const ifUnvailableOrNullRequest = async (product, recomendedProductsIds, newIndex, countUnvailable, maxProduct) => {
-  if(product === null) return product;
-  while(product.status !== "AVAILABLE" && newIndex < recomendedProductsIds.length) {
-    product = await Catalog.getProduct(getNewItemId(recomendedProductsIds, newIndex)).catch(handlingError);
-    newIndex = getNewIndex(countUnvailable, maxProduct);
-    if(product === null) {
-      product = ifNullRequest(product, recomendedProductsIds, newIndex, countUnvailable, maxProduct);
     }
-  }
-  return product;
-}
-
-const tratarNulosEUnvailable =  async (recomendedProductsIds, recommendedProductsItems, maxProduct) => {      
-  let countUnvailable = {count: 0};
-  let newIndex = getNewIndex(countUnvailable, maxProduct);
-  let newProducts = []
-
-  for (let product of recommendedProductsItems) {
-    if (product === null) {
-      product = await ifNullRequest(product, recomendedProductsIds, newIndex, countUnvailable, maxProduct);
-      product = await ifUnvailableOrNullRequest(product, recomendedProductsIds, newIndex, countUnvailable, maxProduct);
-      newProducts.push(product);
-    } else if(product.status !== 'AVAILABLE') {
-      product = await ifUnvailableOrNullRequest(product, recomendedProductsIds, newIndex, countUnvailable, maxProduct);
-      newProducts.push(product);  
-     }
-  }
-  recommendedProductsItems = recommendedProductsItems.concat(newProducts);
-  return filterNullAndUnvailables(recommendedProductsItems);
-}
+  })
+);
 
 async function getShowCases(req, res) {
   let maxProduct = req.query.max_product;
- 
+
+  // eslint-disable-next-line no-restricted-globals
   if (isNaN(maxProduct)) {
-    res.status(400).send({error: '"max_product" parameter is not a number!'});
+    res.status(400).send({ error: '"max_product" parameter is not a number!' });
     return;
   }
 
@@ -74,46 +25,84 @@ async function getShowCases(req, res) {
   if (maxProduct < 10) {
     maxProduct = 10;
   }
-  
+
   try {
-    let getMostPopularPromise = Linx.getMostPopular().catch((error) => {
+    const getMostPopularPromise = Linx.getMostPopular().catch((error) => {
       throw new Error(error);
     });
-    let getPriceReductionPromise = Linx.getPriceReduction().catch((error) => {
+    const getPriceReductionPromise = Linx.getPriceReduction().catch((error) => {
       throw new Error(error);
     });
 
-    let [mostPopular, priceReduction] = await Promise.all([getMostPopularPromise, getPriceReductionPromise]);
+    const [mostPopular, priceReduction] = await Promise.all([
+      getMostPopularPromise,
+      getPriceReductionPromise,
+    ]);
 
-    mostPopularSliced = mostPopular.slice(0, maxProduct);
-    priceReductionSliced = priceReduction.slice(0, maxProduct);
+    const mostPopularSliced = mostPopular.slice(0, maxProduct);
+    const priceReductionSliced = priceReduction.slice(0, maxProduct);
 
-    let mostPopularItems = await Promise.all(mostPopularSliced.map(({recommendedProduct}) => {
-      return Catalog.getProduct(recommendedProduct.id).catch(handlingError);
-    })).catch(error => console.error(new Error(error)));
 
-    let priceReductionItems = await Promise.all(priceReductionSliced.map(({recommendedProduct}) => {
-      return Catalog.getProduct(recommendedProduct.id).catch(handlingError);
-    })).catch(error => console.error(new Error(error)));
-    
-    mostPopularItems = await tratarNulosEUnvailable(mostPopular, mostPopularItems, maxProduct).catch((error) =>{ 
-      throw new Error(error);
-    });
-    priceReductionItems = await tratarNulosEUnvailable(priceReduction, priceReductionItems, maxProduct).catch((error) =>{ 
-      throw new Error(error);
-    });
-    
+    let mostPopularItems = await Promise.all(mostPopularSliced.map(({ recommendedProduct }) => (
+      Catalog.getProduct(recommendedProduct.id).catch(handlingError))))
+      .catch((error) => console.error(new Error(error)));
+
+    let priceReductionItems = await Promise.all(priceReductionSliced
+      .map(({ recommendedProduct }) => (
+        Catalog.getProduct(recommendedProduct.id).catch(handlingError)))).catch((error) => console.error(new Error(error)));
+
+    let count = 0;
+    let index = maxProduct + count;
+    const mostPopularItemsFiltered = await Promise.all(mostPopularItems.map((product) => {
+      if (product === null && index < mostPopular.length) {
+        count += 1;
+        index = maxProduct + count;
+        return Catalog.getProduct(mostPopular[index].recommendedProduct.id)
+          .catch(handlingError);
+      }
+      if (product.status.toLocaleLowerCase() !== 'avaliable' && index < mostPopular.length) {
+        count += 1;
+        index = maxProduct + count;
+        return Catalog.getProduct(mostPopular[index].recommendedProduct.id)
+          .catch(handlingError);
+      }
+    }));
+
+    count = 0;
+    index = maxProduct + count;
+    const priceReductionItemsFiltered = await Promise.all(priceReductionItems.map((product) => {
+      if (product === null && index < priceReduction.length) {
+        count += 1;
+        index = maxProduct + count;
+        return Catalog.getProduct(priceReduction[index].recommendedProduct.id)
+          .catch(handlingError);
+      }
+      if (product.status.toLocaleLowerCase() !== 'available' && index < priceReduction.length) {
+        console.log(product.status);
+        count += 1;
+        index = maxProduct + count;
+        return Catalog.getProduct(priceReduction[index].recommendedProduct.id)
+          .catch(handlingError);
+      }
+    }));
+
+
+    mostPopularItems = mostPopularItems.concat(mostPopularItemsFiltered);
+    priceReductionItems = priceReductionItems.concat(priceReductionItemsFiltered);
+
+    mostPopularItems = filterNullAndUnvailables(mostPopularItems);
+    priceReductionItems = filterNullAndUnvailables(priceReductionItems);
+
     res.json({
       mostPopular: mostPopularItems,
-      priceReduction: priceReductionItems
-    })
-
-  } catch(error) {
+      priceReduction: priceReductionItems,
+    });
+  } catch (error) {
     res.status(500).send(error.message);
     console.error(error);
   }
 }
 
 module.exports = {
-  getShowCases
-}
+  getShowCases,
+};
