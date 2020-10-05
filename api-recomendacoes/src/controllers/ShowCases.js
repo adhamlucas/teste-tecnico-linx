@@ -60,7 +60,7 @@ async function getShowCases(req, res) {
         return Catalog.getProduct(mostPopular[index].recommendedProduct.id)
           .catch(handlingError);
       }
-      if (product.status.toLocaleLowerCase() !== 'avaliable' && index < mostPopular.length) {
+      if (product.status.toLocaleLowerCase() !== 'available' && index < mostPopular.length) {
         count += 1;
         index = maxProduct + count;
         return Catalog.getProduct(mostPopular[index].recommendedProduct.id)
@@ -78,7 +78,6 @@ async function getShowCases(req, res) {
           .catch(handlingError);
       }
       if (product.status.toLocaleLowerCase() !== 'available' && index < priceReduction.length) {
-        console.log(product.status);
         count += 1;
         index = maxProduct + count;
         return Catalog.getProduct(priceReduction[index].recommendedProduct.id)
