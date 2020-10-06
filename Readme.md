@@ -88,13 +88,13 @@ wget -qO - https://www.mongodb.org/static/pgp/server-4.4.asc | sudo apt-key add 
 
 Agora criaremos um arquivo e lista para versão do sistema em uso.
 
-Se você está usando o Ubuntu 20.04 (Focal)
+Se você está usando o Ubuntu 20.04 (Focal), use o seguinte comando:
 
 ```
 echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/4.4 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-4.4.list
 ```
 
-Caso, use Ubuntu 18.04 (Bionic)
+Caso, use Ubuntu 18.04 (Bionic), este:
 
 ```
 echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu bionic/mongodb-org/4.4 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-4.4.list
@@ -112,7 +112,7 @@ Finalmente, start o mongoDB
 sudo systemctl start mongod
 ```
 
-Para verificar se ele já está rodando, use o seguinte comando
+Para verificar se banco já está funcionando, use o seguinte comando
 
 ```
 sudo systemctl status mongod
@@ -130,9 +130,6 @@ Após ter instalado o Docker, criaremos um container de redis local através de 
 ```
 docker run --name local-redis -p 6379:6379 -d redis
 ```
-
-
-
 
 <br>
 
@@ -156,7 +153,6 @@ cd ..
 cd api-catalogo
 npm install
 ```
-
 
 Agora executaremos os serviços, porém, antes precisamos executar o script para persistir os dados do catalog.json no mongodb. Ainda na pasta api-catalogo, execute:
 
