@@ -3,6 +3,8 @@
 
 ## Arquitetura e decisões técnicas
 
+![Diagrama de Sequencia e Funcionamento da Arquitetura](./documentation/arquitetura/arquitetura.png)
+
 ### Banco de Dados:
 ---
 Para esse projeto, estou utilizando o banco de dados _MongoDB_, pela sua versatilidade e estrutura, formato _BSON_, semelhante aos dados do arquivo _JSON_, formado dos dados fornecidos para API de Catálogo. Além disso, devido a não necessidade de queries complexas tornou-se outro motivo para a escolha do MongoDB. Também escolhi utilizar o driver _Mongoose_ que é uma ferramenta de modelagem de objetos MongoDB projetada para ambiente assíncrono e facilita a integração das aplicações Nodejs com o banco.
@@ -13,14 +15,11 @@ Quanto à modelagem, os dados fornecidos foram persitidos no mesmo Schema que es
 ---
 A utilização do Redis como cache na API de catálogo, assim diminuindo a necessidade de consultas ao banco além de tornar a API mais eficiente em respostas devido a velocidade de consulta e escrita no cache. 
 
-</br>
 
 ### Organização do código
 ---
 
 Para boas práticas de código e formatação, utilizei o pacote _ESLint_. Como estrutura de projeto busquei utilizar a estrutura de Database, Models, Controllers e routes para a API de Catálogo que garantiu uma boa separação das responsabilidades de cada módulo assim permitindo uma boa matutenção do código. Para a API de recomendações, utilizei uma estrutura similar, substituindo a camada de Database para de serviços devido a necessidade de comunicação com a API de Catálogo e os microserviços da Linx.
-
-</br>
 
 ### Tecnologias utilizadas
 ---
@@ -31,11 +30,11 @@ Para boas práticas de código e formatação, utilizei o pacote _ESLint_. Como 
 - HTML e CSS
 - Redis
 
-### Instruções para execução
+## Instruções para execução
 ---
 Os comandos a seguir foram testados em uma máquina virtual, com o sistema operacional Ubuntu 20.04 Focal Fossa, a partir de uma instalação "limpa".
 
-## 1. Instalação de dependências
+### 1. Instalação de dependências
 ---
 
 O primeiro passo é a instalação do Git. Para isso, usar o comando:
@@ -131,9 +130,6 @@ Após ter instalado o Docker, criaremos um container de redis local através de 
 docker run --name local-redis -p 6379:6379 -d redis
 ```
 
-<br>
-
-
 ## **2. Executando a API**
 ---
 
@@ -173,21 +169,16 @@ cd api-recomendacoes
 npm start
 ```
 
-<br>
-
 ## 3. Executando o frontend
 ---
 
 Após estarmos com todos os serviços funcionando podemos utilizar o frontend. Para isso basta abrir o arquivo index.html que se encontra na pasta frontend do repositório.
 
-<br>
-
 ## 4. Documentação
 ---
 
-Para visualizar a documentação do projeto você pode abrir o arquivo html que se encontra na pasta documentations ou utilizar o seguinte link: https://app.swaggerhub.com/apis-docs/adhamoliveira/Linx/1.0.0 
+Para visualizar a documentação do projeto você pode abrir o arquivo html que se encontra na pasta documentations ou utilizar o seguinte link: https://app.swaggerhub.com/apis-docs/adhamoliveira/Linx/1.0.0
 
-<br>
 <br>
 
 ### Autor: Adham Oliveira
