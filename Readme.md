@@ -131,8 +131,14 @@ cd api-catalogo
 npm install
 ```
 
-Agora executaremos os serviços, então no terminal atual e na pasta api-catalogo executaremos o serviço de Catalogo, utlizando o comando a seguir:
 
+Agora executaremos os serviços, porém, antes precisamos executar o script para persistir os dados do catalog.json no mongodb. Ainda na pasta api-catalogo, execute:
+
+```
+npm run read-save
+```
+
+Terminado de exutar o script executaremos o serviço de Catalogo:
 ```
 npm start
 ```
