@@ -7,13 +7,16 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "read-save": "node ./script/script.js",
-    "start": "node index.js"
+    "start": "node index.js",
+    "debug": "node --inspect-brk index.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "bluebird": "^3.7.2",
     "express": "^4.17.1",
-    "mongoose": "^5.10.7"
+    "mongoose": "^5.10.7",
+    "redis": "^3.0.2"
   }
 }

@@ -9,6 +9,10 @@ Para esse projeto, estou utilizando o banco de dados _MongoDB_, pela sua versati
 
 Quanto à modelagem, os dados fornecidos foram persitidos no mesmo Schema que estavam os objetos JSON, tendo como ids únicos os próprios ids.
 
+### Solução para reduzir o acesso ao SGBD e também de diminuir gargalos na comunicação entre microserviços
+---
+A utilização do Redis como cache na API de catálogo, assim diminuindo a necessidade de consultas ao banco além de tornar a API mais eficiente em respostas devido a velocidade de consulta e escrita no cache. 
+
 </br>
 
 ### Organização do código
@@ -25,13 +29,13 @@ Para boas práticas de código e formatação, utilizei o pacote _ESLint_. Como 
 - MongoDB
 - Mongoose
 - HTML e CSS
-
+- Redis
 
 ### Instruções para execução
 ---
 Os comandos a seguir foram testados em uma máquina virtual, com o sistema operacional Ubuntu 20.04 Focal Fossa, a partir de uma instalação "limpa".
 
-### **1. Instalação de dependências**
+## 1. Instalação de dependências
 ---
 
 O primeiro passo é a instalação do Git. Para isso, usar o comando:
@@ -45,6 +49,9 @@ Instalação do curl:
 ```
 sudo apt install curl -y
 ```
+
+### Node
+---
 
 Agora, deve-se habilitar o repositório NodeSource com o comando:
 
@@ -64,8 +71,11 @@ Para verificar se o Node foi instalado corretamente, execute o comando (este pro
 node --version
 ```
 
+### MongoDB
+---
+
 Agora instalaremos o MongoDB.
-Primeiro vamos importar instalar a biblioteca gnupg
+Primeiro vamos  instalar a biblioteca gnupg
 ```
 sudo apt-get install gnupg
 ```
@@ -76,7 +86,7 @@ Em seguida, importaremos a chave para o sistema de gerenciamento de pacotes
 wget -qO - https://www.mongodb.org/static/pgp/server-4.4.asc | sudo apt-key add -
 ```
 
-Agora criaremos um arquivo e lista para versão determianda.
+Agora criaremos um arquivo e lista para versão do sistema em uso.
 
 Se você está usando o Ubuntu 20.04 (Focal)
 
@@ -108,20 +118,36 @@ Para verificar se ele já está rodando, use o seguinte comando
 sudo systemctl status mongod
 ```
 
+### Docker
+---
+Para usar o Redis precisaremos do Docker. Para instalá-lo você pode seguir os passos descritos na documentação oficial:
+https://docs.docker.com/engine/install/ubuntu/.
+
+### Redis
+---
+Após ter instalado o Docker, criaremos um container de redis local através de uma imagem:
+
+```
+docker run --name local-redis -p 6379:6379 -d redis
+```
+
+
+
+
 <br>
 
 
-### **2. Executando a API**
+## **2. Executando a API**
 ---
 
--   Primeiramente, é preciso clonar o repositório e apontar o terminal para a pasta do projeto:
+Primeiramente, é preciso clonar o repositório e apontar o terminal para a pasta do projeto:
 
 ```
 git clone https://github.com/adhamlucas/teste-tecnico-linx.git
 cd teste-tecnico-linx
 ```
 
--  Instalação dos pacotes Node utilizados pelo projeto:
+Instalação dos pacotes Node utilizados pelo projeto:
 
 ```
 cd api-recomendacoes
@@ -153,18 +179,19 @@ npm start
 
 <br>
 
-### 3. Executando o frontend
+## 3. Executando o frontend
 ---
 
 Após estarmos com todos os serviços funcionando podemos utilizar o frontend. Para isso basta abrir o arquivo index.html que se encontra na pasta frontend do repositório.
 
 <br>
 
-### 4. Documentação
+## 4. Documentação
 ---
 
 Para visualizar a documentação do projeto você pode abrir o arquivo html que se encontra na pasta documentations ou utilizar o seguinte link: https://app.swaggerhub.com/apis-docs/adhamoliveira/Linx/1.0.0 
 
+<br>
 <br>
 
 ### Autor: Adham Oliveira
