@@ -29,7 +29,7 @@ Para boas práticas de código e formatação, utilizei o pacote _ESLint_. Como 
 
 ### Instruções para execução
 ---
-Os comandos a seguir foram testados em uma máquina virtual, com o sistema operacional Ubuntu 18.04 Bionic Beaver, a partir de uma instalação "limpa".
+Os comandos a seguir foram testados em uma máquina virtual, com o sistema operacional Ubuntu 20.04 Focal Fossa, a partir de uma instalação "limpa".
 
 ### **1. Instalação de dependências**
 ---
@@ -58,7 +58,7 @@ Após isso, deve-se instalar o Node com o comando:
 sudo apt-get install -y nodejs
 ```
 
-Para verificar se o Node foi instalado corretamente, execute o comando (este projeto foi desenvolvido com a versão 10):
+Para verificar se o Node foi instalado corretamente, execute o comando (este projeto foi desenvolvido com a versão 12):
 
 ```
 node --version
